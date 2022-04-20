@@ -2,22 +2,38 @@ import { useCallback, useState, useRef } from 'react';
 import './App.css'
 
 import 'survey-core/modern.min.css';
-import { StylesManager, Model } from 'survey-core';
+import { StylesManager, Model, FunctionFactory } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 
 StylesManager.applyTheme("modern");
 
+function getRandomGroup() {
+  return Math.floor(Math.random() * 2);
+}
+const group = getRandomGroup();
+
+function getGroup() {
+  return group;
+}
+
+FunctionFactory
+    .Instance
+    .register("getGroup", getGroup);
+
 const surveyJson = {
+  surveyPostId: "872717a3-5d5c-4876-acfe-d47aedfec844",
   pages: [{
     elements: [{
       type: "html",
-      html: "<h2>In this survey, we will ask you a couple questions about your impressions of our product.</h2>"
+      html: "<h2>אנחנו פה בניסוי.</h2>"
     }]
   }, {
     elements: [{
+
       name: "satisfaction-score",
       title: "How would you describe your experience with our product?",
       type: "radiogroup",
+      visibleIf: "{group}=1",
 
       choices: [
         { value: 5, text: "Fully satisfying" },
@@ -31,6 +47,7 @@ const surveyJson = {
       name: "B",
       title: "B",
       type: "radiogroup",
+      visibleIf: "{group}=1",
       choices: [
         { value: 5, text: "Fully satisfying" },
         { value: 4, text: "Generally satisfying" },
@@ -43,6 +60,8 @@ const surveyJson = {
   }, 
 {
     name: "page2",
+    visibleIf: "{group}=1",
+
     elements: [
         {
             type: "ranking",
@@ -147,6 +166,13 @@ const surveyJson = {
       } ,
   ]
 }],
+  calculatedValues: [
+  {
+      name: "group",
+      expression: "getGroup()",
+      includeIntoResult: true
+  }
+  ],
   showQuestionNumbers: "off",
   pageNextText: "Forward",
   completeText: "Submit",
@@ -156,13 +182,10 @@ const surveyJson = {
   completedHtml: "זה סוף הניסוי",
 };
 
-// function getRandomGroup() {
-//   return Math.floor(Math.random() * 2);
-// }
+
 
 
 function App() {
-  // const group = useRef(getRandomGroup).current;
   // useRef enables the Model object to persist between state changes
   const survey = useRef(new Model(surveyJson)).current;
   const [surveyResults, setSurveyResults] = useState("");
@@ -179,8 +202,6 @@ function App() {
     }
   });
   survey.onComplete.add(displayResults);
-
-  console.log(surveyResults);
 
   return (
     <>
