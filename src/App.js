@@ -33,7 +33,6 @@ const surveyJson = {
       name: "satisfaction-score",
       title: "How would you describe your experience with our product?",
       type: "radiogroup",
-      visibleIf: "{group}=1",
 
       choices: [
         { value: 5, text: "Fully satisfying" },
@@ -60,7 +59,6 @@ const surveyJson = {
   }, 
 {
     name: "page2",
-    visibleIf: "{group}=1",
 
     elements: [
         {
