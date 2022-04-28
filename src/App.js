@@ -16,9 +16,44 @@ function getGroup() {
   return group;
 }
 
+function getLowestCharity(params) {
+  if(params[0]<=params[1] && params[0]<=params[2])
+    return "A"
+  if(params[1]<=params[0] && params[1]<=params[2])
+    return "B"
+  if(params[2]<=params[0] && params[2]<=params[1])
+    return "C"
+}
+
 FunctionFactory
     .Instance
     .register("getGroup", getGroup);
+
+FunctionFactory
+    .Instance
+    .register("getLowestCharity", getLowestCharity);
+
+const questions = [
+{text:"אני מעדיף לעשות משהו שדורש מעט חשיבה מאשר משהו שדורש חשיבה מאומצת", value:"1"},
+{text:"אני סומך על הרושם הראשוני שיש לי לגבי אנשים", value:"2"},
+{text:"אינני אוהב להיות אחראי למצב שדורש מחשבה רבה", value:"3"},
+{text:"אני מעניק חשיבות רבה לתחושות שלי כשעלי לקבל החלטה", value:"4"},
+{text:"אני מנסה להימנע ממצבים בהם סביר שאצטרך להתעמק בנושא כלשהו", value:"5"},
+{text:"אני טוב בלדמיין דברים באופן חזותי", value:"6"},
+{text:"אני בדרך כלל מרגיש כאשר אדם צודק, גם אם אינני יכול להסביר כיצד אני יודע", value:"7"},
+{text:"הרבה פעמים אני פועל לפי התרשמות רשונית שיש לי", value:"8"},
+{text:"אני מעדיף בעיות מורכבות על פני בעיות פשוטות", value:"9"},
+{text:"אני מתקשה לחשוב תחת לחץ", value:"10"},
+{text:"אינני מוצא סיפוק רב בחשיבה קשה  וממושכת", value:"11"},
+{text:"אני מאמין שאני יכול להעריך אופי של אדם בצורה טובה למדי על סמך הופעתו", value:"12"},
+{text:"חשיבה אינה פעילות שגורמת לי הנאה", value:"13"},
+{text:"אני ער לרגשות שלי ומתחשב בהם כשעלי לבחור בין אפשרויות שונות", value:"14"},
+{text:"הייתי רוצה שחיי יהיו מלאים בחידות שעלי לפתור", value:"15"},
+{text:"מבחינתי, לדעת את הפתרון לבעיה בלי להבין את הסיבה לפתרון, זה בסדר גמור", value:"16"},
+{text:"ההתרשמויות הראשוניות שלי מאנשים הן כמעט תמיד נכונות", value:"17"},
+{text:"אני מוצא עניין רב בחשיבה מופשטת", value:"18"},
+{text:"אני מעדיף לדבר על בעיות בינלאומיות מאשר לדבר על אנשים מפורסמים", value:"19"},
+]
 
 const surveyJson = {
   surveyPostId: "872717a3-5d5c-4876-acfe-d47aedfec844",
@@ -30,51 +65,105 @@ const surveyJson = {
   }, {
     elements: [{
 
-      name: "satisfaction-score",
-      title: "How would you describe your experience with our product?",
-      type: "radiogroup",
+      name: "rationality",
+      title: "סמן מ1 עד 5 כמה אתה מסכים עם המשפטים הבאים",
+      type: "matrix",
 
-      choices: [
-        { value: 5, text: "Fully satisfying" },
-        { value: 4, text: "Generally satisfying" },
-        { value: 3, text: "Neutral" },
-        { value: 2, text: "Rather unsatisfying" },
-        { value: 1, text: "Not satisfying at all" }
+      columns: [
+        {value: 1,text: ""},
+        {value: 2,text: ""}, 
+        {value: 3,text: ""}, 
+        {value: 4,text: ""}, 
+        {value: 5,text: ""}
       ],
-      isRequired: true
-    },{
-      name: "B",
-      title: "B",
-      type: "radiogroup",
-      visibleIf: "{group}=1",
-      choices: [
-        { value: 5, text: "Fully satisfying" },
-        { value: 4, text: "Generally satisfying" },
-        { value: 3, text: "Neutral" },
-        { value: 2, text: "Rather unsatisfying" },
-        { value: 1, text: "Not satisfying at all" }
-      ],
-      isRequired: true
-    }]
+      rows: questions,
+      isRequired: true,
+      isAllRowRequired: true,
+    },]
   }, 
 {
     name: "page2",
-
     elements: [
         {
-            type: "ranking",
-            name: "smartphone-features",
-            title: "תסתכל על כל האגודות",
-            isRequired: true,
-            choices: [
-                "A",
-                "B",
-                "C"
-            ]
-        } , {
         type: "html",
         name: "banner",
-        visibleIf: "{smartphone-features[2]}='B'",
+        html: `<table class="tg">
+        <thead>
+          <tr><th class="tg-0lax">A </th><th class="tg-0lax">B</th><th class="tg-0lax">C</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="tg-0lax">זה 1</td><td class="tg-0lax">זה 2 </td><td class="tg-0lax">זה 3</td></tr>
+          <tr><td class="tg-0lax"></td><td class="tg-0lax"></td><td class="tg-0lax"></td></tr>
+        </tbody>
+        </table>`
+        },{
+              type: "panel",
+              name: "money",
+              title: "אם היו לך עכשיו 100₪ לחלק בין שלושת העמותות האלו, איך היית מחלק את הכסף?",
+              elements: [
+              {
+                  name: "Acharity1",
+                  type: "text",
+                  title: "Please enter your name:",
+                  inputType: "number",
+                  isRequired: true,
+                  validators: [
+                    {
+                        type: "expression",
+                        text: "עליך לחלק בדיוק 100₪ בין העמותות",
+                        expression: "{Acharity1} + {Bcharity1} + {Ccharity1} = 100"
+                    }
+                ]
+              }, {
+                  name: "Bcharity1",
+                  type: "text",
+                  inputType: "number",
+                  isRequired: true,
+                  validators: [
+                    {
+                        type: "expression",
+                        text: "עליך לחלק בדיוק 100₪ בין העמותות",
+                        expression: "{Acharity1} + {Bcharity1} + {Ccharity1} = 100"
+                    }
+                ]
+              }, {
+                  name: "Ccharity1",
+                  type: "text",
+                  inputType: "number",
+                  title: "Your favorite color:",
+                  isRequired: true,
+                  validators: [
+                    {
+                        type: "expression",
+                        text: "עליך לחלק בדיוק 100₪ בין העמותות",
+                        expression: "{Acharity1} + {Bcharity1} + {Ccharity1} = 100"
+                    }
+                ]
+              }
+              ],
+              
+          } ,
+    ],
+}, {
+    name:"page3",
+    elements: [
+      {
+      type: "html",
+      name: "banner",
+      visibleIf: "{lowestCharity}='A'",
+      html: `<table class="tg">
+      <thead>
+        <tr><th class="tg-0lax">A </th><th class="tg-0lax">B</th><th class="tg-0lax">C</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="tg-0lax">זה 1</td><td class="tg-0lax">זה 2 </td><td class="tg-0lax">זה 3</td></tr>
+        <tr><td class="tg-0lax">יעיל</td><td class="tg-0lax"></td><td class="tg-0lax"></td></tr>
+      </tbody>
+      </table>`
+      },  {
+        type: "html",
+        name: "banner",
+        visibleIf: "{lowestCharity}='B'",
         html: `<table class="tg">
         <thead>
           <tr><th class="tg-0lax">A </th><th class="tg-0lax">B</th><th class="tg-0lax">C</th></tr>
@@ -84,10 +173,10 @@ const surveyJson = {
           <tr><td class="tg-0lax"></td><td class="tg-0lax">יעיל</td><td class="tg-0lax"></td></tr>
         </tbody>
         </table>`
-        }, {
+        },  {
           type: "html",
           name: "banner",
-          visibleIf: "{smartphone-features[2]}='C'",
+          visibleIf: "{lowestCharity}='C'",
           html: `<table class="tg">
           <thead>
             <tr><th class="tg-0lax">A </th><th class="tg-0lax">B</th><th class="tg-0lax">C</th></tr>
@@ -97,82 +186,67 @@ const surveyJson = {
             <tr><td class="tg-0lax"></td><td class="tg-0lax"></td><td class="tg-0lax">יעיל</td></tr>
           </tbody>
           </table>`
-          }, {
-            type: "html",
-            name: "banner",
-            visibleIf: "{smartphone-features[2]}='A'",
-            html: `<table class="tg">
-            <thead>
-              <tr><th class="tg-0lax">A </th><th class="tg-0lax">B</th><th class="tg-0lax">C</th></tr>
-            </thead>
-            <tbody>
-              <tr><td class="tg-0lax">זה 1</td><td class="tg-0lax">זה 2 </td><td class="tg-0lax">זה 3</td></tr>
-              <tr><td class="tg-0lax">יעיל</td><td class="tg-0lax"></td><td class="tg-0lax"></td></tr>
-            </tbody>
-            </table>`
-            }
-    ],
-}, {
-    name:"page3",
-    elements: [
-      {
-          type: "panel",
-          name: "money",
-          title: "שוהג תסתכל על כל האגודות",
-          elements: [
+          },{
+            type: "panel",
+            name: "money",
+            title: "אם היו לך עכשיו 100₪ לחלק בין שלושת העמותות האלו, איך היית מחלק את הכסף?",
+            elements: [
             {
-              name: "Amon",
-              type: "text",
-              title: "Please enter your name:",
-              inputType: "number",
-              isRequired: true,
-              validators: [
-                {
-                    type: "expression",
-                    text: "Please tell us your opinion.",
-                    expression: "{Amon} + {Bmon} + {Cmon} = 100"
-                }
-            ]
-          }, {
-              name: "Bmon",
-              type: "text",
-              inputType: "number",
-              isRequired: true,
-              validators: [
-                {
-                    type: "expression",
-                    text: "Please tell us your opinion.",
-                    expression: "{Amon} + {Bmon} + {Cmon} = 100"
-                }
-            ]
-          }, {
-              name: "Cmon",
-              type: "text",
-              inputType: "number",
-              title: "Your favorite color:",
-              isRequired: true,
-              validators: [
-                {
-                    type: "expression",
-                    text: "Please tell us your opinion.",
-                    expression: "{Amon} + {Bmon} + {Cmon} = 100"
-                }
-            ]
-          }
-          ],
-          
-      } ,
-  ]
+                name: "Acharity2",
+                type: "text",
+                title: "Please enter your name:",
+                inputType: "number",
+                isRequired: true,
+                validators: [
+                  {
+                      type: "expression",
+                      text: "עליך לחלק בדיוק 100₪ בין העמותות",
+                      expression: "{Acharity2} + {Bcharity2} + {Ccharity2} = 100"
+                  }
+              ]
+            }, {
+                name: "Bcharity2",
+                type: "text",
+                inputType: "number",
+                isRequired: true,
+                validators: [
+                  {
+                      type: "expression",
+                      text: "עליך לחלק בדיוק 100₪ בין העמותות",
+                      expression: "{Acharity2} + {Bcharity2} + {Ccharity2} = 100"
+                  }
+              ]
+            }, {
+                name: "Ccharity2",
+                type: "text",
+                inputType: "number",
+                title: "Your favorite color:",
+                isRequired: true,
+                validators: [
+                  {
+                      type: "expression",
+                      text: "עליך לחלק בדיוק 100₪ בין העמותות",
+                      expression: "{Acharity2} + {Bcharity2} + {Ccharity2} = 100"
+                  }
+              ]
+            }
+            ],
+            
+        } ,
+  ],
 }],
   calculatedValues: [
   {
       name: "group",
       expression: "getGroup()",
       includeIntoResult: true
-  }
-  ],
+  },{
+    name: "lowestCharity",
+    expression: "getLowestCharity({Acharity1},{Bcharity1},{Ccharity1})",
+    includeIntoResult: true
+}],
   showQuestionNumbers: "off",
-  pageNextText: "Forward",
+  pageNextText: "המשך",
   completeText: "Submit",
   showPrevButton: false,
   firstPageIsStarted: true,
