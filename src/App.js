@@ -54,7 +54,7 @@ const surveyJson = {
           ],
           rows: Questions.rationality,
           isRequired: true,
-          //isAllRowRequired: true,
+          isAllRowRequired: true,
         },
       ],
     },
