@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useRef } from "react";
 import "./App.css";
 
 import "survey-core/modern.min.css";
@@ -34,7 +34,10 @@ const surveyJson = {
       elements: [
         {
           type: "html",
-          html: "<h2>אנחנו פה בניסוי.</h2>",
+          html: `
+          <h2>ברוכים הבאים</h2>
+          <h3>לידיעתכם, המידע בשאלון זה יאסף בצורה אנונימית</h3>
+          `,
         },
       ],
     },
@@ -62,20 +65,32 @@ const surveyJson = {
       name: "page2",
       elements: [
         {
-          type: "html",
-          name: "banner",
-          html: Questions.Charites1,
-        },
-        {
           type: "panel",
           name: "money",
-          title:
-            "אם היו לך עכשיו 100₪ לחלק בין שלושת העמותות האלו, איך היית מחלק את הכסף?",
+          title:"לפניך 3 עמותות",
           elements: [
+            {
+              type: "html",
+              name: "banner",
+              html: Questions.Charites1,
+            },
+            {
+              type: "html",
+              name: "banner",
+              html: `
+              <span class="sv-string-viewer">
+              אם היו לך עכשיו 100₪ לחלק בין שלושת העמותות האלו, איך היית מחלק את הכסף?
+              </span>
+              <br>
+              <span class="sv-string-viewer">
+              עליך לרשום את הסכום בשקלים שתרצה לתת לכל עמותה
+              </span>
+              `
+            },
             {
               name: "Acharity1",
               type: "text",
-              title: "Please enter your name:",
+              title: Questions.A.name,
               inputType: "number",
               isRequired: true,
               validators: [
@@ -93,6 +108,7 @@ const surveyJson = {
             {
               name: "Bcharity1",
               type: "text",
+              title: Questions.B.name,
               inputType: "number",
               isRequired: true,
               validators: [
@@ -112,7 +128,7 @@ const surveyJson = {
               name: "Ccharity1",
               type: "text",
               inputType: "number",
-              title: "Your favorite color:",
+              title: Questions.C.name,
               isRequired: true,
               validators: [
                 {
@@ -133,34 +149,54 @@ const surveyJson = {
     {
       name: "page3",
       elements: [
-        {
-          type: "html",
-          name: "banner",
-          visibleIf: "{lowestCharity}='A'",
-          html: Questions.Charites2A,
-        },
-        {
-          type: "html",
-          name: "banner",
-          visibleIf: "{lowestCharity}='B'",
-          html: Questions.Charites2B,
-        },
-        {
-          type: "html",
-          name: "banner",
-          visibleIf: "{lowestCharity}='C'",
-          html: Questions.Charites2C,
-        },
+     
         {
           type: "panel",
           name: "money",
           title:
-            "אם היו לך עכשיו 100₪ לחלק בין שלושת העמותות האלו, איך היית מחלק את הכסף?",
+            "לפניך שוב אותן 3 עמותות, אבל עם מידע נוסף עליהן",
           elements: [
+            {
+              type: "html",
+              name: "banner",
+              visibleIf: "{group}=0",
+              html: Questions.Charites2base,
+            },
+            {
+              type: "html",
+              name: "banner",
+              visibleIf: "{group}=1 && {lowestCharity}='A'",
+              html: Questions.Charites2A,
+            },
+            {
+              type: "html",
+              name: "banner",
+              visibleIf: "{group}=1 && {lowestCharity}='B'",
+              html: Questions.Charites2B,
+            },
+            {
+              type: "html",
+              name: "banner",
+              visibleIf: "{group}=1 && {lowestCharity}='C'",
+              html: Questions.Charites2C,
+            },
+            {
+              type: "html",
+              name: "banner",
+              html: `
+              <span class="sv-string-viewer">
+              אם היו לך עכשיו 100₪ לחלק בין שלושת העמותות האלו, איך היית מחלק את הכסף?
+              </span>
+              <br>
+              <span class="sv-string-viewer">
+              עליך לרשום את הסכום בשקלים שתרצה לתת לכל עמותה
+              </span>
+              `
+            },
             {
               name: "Acharity2",
               type: "text",
-              title: "Please enter your name:",
+              title: Questions.A.name,
               inputType: "number",
               isRequired: true,
               validators: [
@@ -179,6 +215,7 @@ const surveyJson = {
             {
               name: "Bcharity2",
               type: "text",
+              title: Questions.B.name,
               inputType: "number",
               isRequired: true,
               validators: [
@@ -197,7 +234,7 @@ const surveyJson = {
               name: "Ccharity2",
               type: "text",
               inputType: "number",
-              title: "Your favorite color:",
+              title: Questions.C.name,
               isRequired: true,
               validators: [
                 {
@@ -231,22 +268,29 @@ const surveyJson = {
   ],
   showQuestionNumbers: "off",
   pageNextText: "המשך",
-  completeText: "Submit",
+  completeText: "שלח",
   showPrevButton: false,
   firstPageIsStarted: true,
-  startSurveyText: "זה הניסוי",
-  completedHtml: "זה סוף הניסוי",
+  startSurveyText: "התחלת הניסוי",
+  completedHtml: `
+  <h1>
+  זה סוף הניסוי
+  </h1>
+  <h3>
+  לידיעתכם, כל העמותות בניסוי נמצאו יעילות על ידי ארגון מידות
+  </h3>
+  `,
 };
 
 function App() {
   // useRef enables the Model object to persist between state changes
   const survey = useRef(new Model(surveyJson)).current;
-  const [surveyResults, setSurveyResults] = useState("");
-  const [isSurveyCompleted, setIsSurveyCompleted] = useState(false);
+  //const [surveyResults, setSurveyResults] = useState("");
+  // [isSurveyCompleted, setIsSurveyCompleted] = useState(false);
 
   const displayResults = useCallback((sender) => {
-    setSurveyResults(JSON.stringify(sender.data, null, 4));
-    setIsSurveyCompleted(true);
+    //setSurveyResults(JSON.stringify(sender.data, null, 4));
+    //setIsSurveyCompleted(true);
   }, []);
 
   survey.onValidateQuestion.add(function (sender, options) {
@@ -260,12 +304,12 @@ function App() {
   return (
     <>
       <Survey model={survey} id="surveyContainer" />
-      {isSurveyCompleted && (
+      {/* {isSurveyCompleted && (
         <>
           <p>Result JSON:</p>
           <code style={{ whiteSpace: "pre" }}>{surveyResults}</code>
         </>
-      )}
+      )} */}
     </>
   );
 }
