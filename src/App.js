@@ -1,4 +1,3 @@
-import { useCallback, useRef } from "react";
 import "./App.css";
 
 import "survey-core/modern.min.css";
@@ -283,33 +282,17 @@ const surveyJson = {
 };
 
 function App() {
-  // useRef enables the Model object to persist between state changes
-  const survey = useRef(new Model(surveyJson)).current;
-  //const [surveyResults, setSurveyResults] = useState("");
-  // [isSurveyCompleted, setIsSurveyCompleted] = useState(false);
+  const survey = new Model();
+  survey.focusFirstQuestionAutomatic = false;
+  survey.fromJSON(surveyJson);
 
-  const displayResults = useCallback((sender) => {
-    //setSurveyResults(JSON.stringify(sender.data, null, 4));
-    //setIsSurveyCompleted(true);
-  }, []);
-
-  survey.onValidateQuestion.add(function (sender, options) {
-    if (options.name === "rateMe") {
-      if (options.value < 1 || options.value > 9)
-        options.error = "Please enter value from 1 till 9.";
-    }
-  });
-  survey.onComplete.add(displayResults);
+  survey.onCurrentPageChanged.add(()=>{
+    window.scrollTo(0,0);
+  })
 
   return (
     <>
       <Survey model={survey} id="surveyContainer" />
-      {/* {isSurveyCompleted && (
-        <>
-          <p>Result JSON:</p>
-          <code style={{ whiteSpace: "pre" }}>{surveyResults}</code>
-        </>
-      )} */}
     </>
   );
 }
