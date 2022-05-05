@@ -43,6 +43,25 @@ const surveyJson = {
     {
       elements: [
         {
+          type: "text",
+          name: "age",
+          title: "גיל",
+          isRequired: true,
+          inputType: "number",
+          min: 0,
+        },
+        {
+          type: "dropdown",
+          name: "gender",
+          title: "מין",
+          isRequired: true,
+          choices: ["זכר", "נקבה", "אחר"],
+        },
+      ],
+    },
+    {
+      elements: [
+        {
           name: "rationality",
           title: "סמן מ1 עד 5 כמה אתה מסכים עם המשפטים הבאים",
           type: "matrix",
@@ -66,7 +85,7 @@ const surveyJson = {
         {
           type: "panel",
           name: "money",
-          title:"לפניך 3 עמותות",
+          title: "לפניך 3 עמותות",
           elements: [
             {
               type: "html",
@@ -84,7 +103,7 @@ const surveyJson = {
               <span class="sv-string-viewer">
               עליך לרשום את הסכום בשקלים שתרצה לתת לכל עמותה
               </span>
-              `
+              `,
             },
             {
               name: "Acharity1",
@@ -97,7 +116,8 @@ const surveyJson = {
                   type: "expression",
                   text: "עליך לחלק בדיוק 100₪ בין העמותות",
                   expression: "{Acharity1} + {Bcharity1} + {Ccharity1} = 100",
-                }, {
+                },
+                {
                   type: "expression",
                   text: "בלי מספרים שליליים",
                   expression: "{Acharity1}>-1",
@@ -134,7 +154,8 @@ const surveyJson = {
                   type: "expression",
                   text: "עליך לחלק בדיוק 100₪ בין העמותות",
                   expression: "{Acharity1} + {Bcharity1} + {Ccharity1} = 100",
-                }, {
+                },
+                {
                   type: "expression",
                   text: "בלי מספרים שליליים",
                   expression: "{Ccharity1}>-1",
@@ -148,12 +169,10 @@ const surveyJson = {
     {
       name: "page3",
       elements: [
-     
         {
           type: "panel",
           name: "money",
-          title:
-            "לפניך שוב אותן 3 עמותות, אבל עם מידע נוסף עליהן",
+          title: "לפניך שוב אותן 3 עמותות, אבל עם מידע נוסף עליהן",
           elements: [
             {
               type: "html",
@@ -190,7 +209,7 @@ const surveyJson = {
               <span class="sv-string-viewer">
               עליך לרשום את הסכום בשקלים שתרצה לתת לכל עמותה
               </span>
-              `
+              `,
             },
             {
               name: "Acharity2",
@@ -222,7 +241,8 @@ const surveyJson = {
                   type: "expression",
                   text: "עליך לחלק בדיוק 100₪ בין העמותות",
                   expression: "{Acharity2} + {Bcharity2} + {Ccharity2} = 100",
-                }, {
+                },
+                {
                   type: "expression",
                   text: "בלי מספרים שליליים",
                   expression: "{Bcharity2}>-1",
@@ -286,9 +306,9 @@ function App() {
   survey.focusFirstQuestionAutomatic = false;
   survey.fromJSON(surveyJson);
 
-  survey.onCurrentPageChanged.add(()=>{
-    window.scrollTo(0,0);
-  })
+  survey.onCurrentPageChanged.add(() => {
+    window.scrollTo(0, 0);
+  });
 
   return (
     <>
