@@ -8,7 +8,8 @@ import * as Questions from "./questions.js";
 StylesManager.applyTheme("modern");
 
 function getRandomGroup() {
-  return Math.floor(Math.random() * 2);
+  //return Math.floor(Math.random() * 2);
+  return 1;
 }
 const group = getRandomGroup();
 
