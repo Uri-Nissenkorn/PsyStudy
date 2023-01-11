@@ -28,7 +28,7 @@ FunctionFactory.Instance.register("getGroup", getGroup);
 FunctionFactory.Instance.register("getLowestCharity", getLowestCharity);
 
 const surveyJson = {
-  surveyPostId: "872717a3-5d5c-4876-acfe-d47aedfec844",
+  surveyPostId: process.env.REACT_APP_SURVEY_POST_ID,
   pages: [
     {
       elements: [
